@@ -2,11 +2,15 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import reportRoutes from "./reportRoutes";
+import { config } from "./config";
+
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// logs http de cada request
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
@@ -15,8 +19,8 @@ app.get("/", (req, res) => {
 
 app.use("/reports", reportRoutes);
 
-const PORT = 4000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(config.port, () => {
+  console.log(
+    `[server] Running on port ${config.port} (${config.env} mode)`
+  );
 });
