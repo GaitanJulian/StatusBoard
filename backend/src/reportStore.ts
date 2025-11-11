@@ -1,8 +1,14 @@
 import type { ReportStatus } from "./types";
 import prisma from "./prisma";
 
-export async function getAllReports() {
+export async function getAllReports(filters?: any) {
+  const where: any = {};
+
+  if (filters?.status) where.status = filters.status;
+  if (filters?.service) where.service = { contains: filters.service, mode: "insensitive" };
+
   return prisma.report.findMany({
+    where,
     orderBy: { createdAt: "desc" },
   });
 }
