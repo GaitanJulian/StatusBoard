@@ -178,7 +178,7 @@ Planned enhancements to increase production realism:
 - ⏳ Swagger/OpenAPI documentation at `/docs`
 - ⏳ Filtering & search for incidents (by service, status)
 - ⏳ Simple role-based view (Agent vs Viewer)
-- ⏳ Deployment on Render (API) + Vercel/Netlify (frontend)
+- ✅ Deployment on Render (API) + Vercel/Netlify (frontend)
 
 ---
 

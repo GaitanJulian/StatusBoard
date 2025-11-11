@@ -1,29 +1,29 @@
 import { Router } from "express";
 import { createReport, getAllReports, updateReportStatus } from "./reportStore";
-import { ReportStatus } from "./types";
+import type { ReportStatus } from "./types";
 
 const router = Router();
 
-// GET /reports - list all reports
-router.get("/", (req, res) => {
-  const reports = getAllReports();
+// GET /reports
+router.get("/", async (req, res) => {
+  const reports = await getAllReports();
   res.json(reports);
 });
 
-// POST /reports - create new report
-router.post("/", (req, res) => {
+// POST /reports
+router.post("/", async (req, res) => {
   const { service, title, description } = req.body;
 
   if (!service || !title || !description) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  const report = createReport({ service, title, description });
+  const report = await createReport({ service, title, description });
   res.status(201).json(report);
 });
 
-// PUT /reports/:id/status - update status
-router.put("/:id/status", (req, res) => {
+// PUT /reports/:id/status
+router.put("/:id/status", async (req, res) => {
   const id = Number(req.params.id);
   const { status } = req.body as { status?: ReportStatus };
 
@@ -31,7 +31,7 @@ router.put("/:id/status", (req, res) => {
     return res.status(400).json({ message: "Invalid status" });
   }
 
-  const updated = updateReportStatus(id, status as ReportStatus);
+  const updated = await updateReportStatus(id, status as ReportStatus);
 
   if (!updated) {
     return res.status(404).json({ message: "Report not found" });

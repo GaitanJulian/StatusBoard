@@ -1,41 +1,33 @@
-import { Report, ReportStatus } from "./types";
+import type { ReportStatus } from "./types";
+import prisma from "./prisma";
 
-let reports: Report[] = [];
-let nextId = 1;
-
-export function getAllReports(): Report[] {
-  return reports;
+export async function getAllReports() {
+  return prisma.report.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 }
 
-export function createReport(data: {
+export async function createReport(data: {
   service: string;
   title: string;
   description: string;
-}): Report {
-  const now = new Date().toISOString();
-
-  const newReport: Report = {
-    id: nextId++,
-    service: data.service,
-    title: data.title,
-    description: data.description,
-    status: "OPEN",
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  reports.push(newReport);
-  return newReport;
+}) {
+  return prisma.report.create({
+    data: {
+      service: data.service,
+      title: data.title,
+      description: data.description,
+      // status defaults to "OPEN"
+    },
+  });
 }
 
-export function updateReportStatus(
-  id: number,
-  status: ReportStatus
-): Report | null {
-  const report = reports.find((r) => r.id === id);
+export async function updateReportStatus(id: number, status: ReportStatus) {
+  const report = await prisma.report.findUnique({ where: { id } });
   if (!report) return null;
 
-  report.status = status;
-  report.updatedAt = new Date().toISOString();
-  return report;
+  return prisma.report.update({
+    where: { id },
+    data: { status },
+  });
 }
