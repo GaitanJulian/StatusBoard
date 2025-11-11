@@ -154,42 +154,175 @@ Updates the status if report exists.
 
 ---
 
-## 🧠 Why This Project Matters
+## 🔐 Authentication
 
-This project is intentionally structured to demonstrate:
+Certain endpoints require an **API key** to perform administrative actions.
 
-- Experience with **Node.js + TypeScript** in a clean modular API.
-- Integration of a **React + TypeScript** frontend consuming a real backend.
-- Understanding of **incident management**, **status flows**, and **support-oriented tooling**.
-- Ability to work with **env-based configuration**, HTTP clients, logging, and basic API design.
+Include the key in the `Authorization` header (or `x-api-key`) when updating a report’s status.
 
-Planned improvements (Roadmap) are aligned with real-world backend/support roles.
+Example:
+
+```bash
+curl -X PUT https://statusboard-s9h9.onrender.com/reports/1/status \
+  -H "Content-Type: application/json" \
+  -H "Authorization: supersecretkey123" \
+  -d '{"status":"RESOLVED"}'
+
+Response:
+{
+  "id": 1,
+  "service": "Customer Portal",
+  "title": "Login failure for valid users",
+  "description": "Users receive 500 error when submitting the login form.",
+  "status": "RESOLVED",
+  "createdAt": "2025-11-10T23:13:42.000Z",
+  "updatedAt": "2025-11-11T19:22:03.000Z"
+}
+
+```
+---
+
+## 🔎 Filtering Reports
+
+You can filter reports by status or service name using query parameters.
+
+Exmples:
+```bash
+GET /reports?status=OPEN
+GET /reports?service=Portal
+GET /reports?status=INVESTIGATING&service=API
+```
+
+## 🧩 Environment Variables
+
+Backend (`backend/.env`):
+
+```env
+DATABASE_URL="file:./dev.db"
+PORT=4000
+ADMIN_TOKEN=supersecretkey123
+```
+
+Frontend (deployment):
+
+```env
+VITE_API_BASE_URL=https://your-backend-url
+```
+
+These variables are used for:
+
+- Database connection (Prisma)
+- Configurable server port
+- Admin-only status update protection
+- Pointing the frontend to the correct API (local or production)
 
 ---
 
-## 📌 Roadmap
+## ⚙️ Running Locally
 
-Planned enhancements to increase production realism:
+### 1️⃣ Backend
 
-- ✅ Environment-based API URL (Vite `VITE_API_BASE_URL`)
-- ⏳ Persistent storage with Prisma + SQLite/PostgreSQL
-- ⏳ Centralized error handling and structured logs
-- ⏳ Basic auth simulation for protected actions
-- ⏳ Swagger/OpenAPI documentation at `/docs`
-- ⏳ Filtering & search for incidents (by service, status)
-- ⏳ Simple role-based view (Agent vs Viewer)
-- ✅ Deployment on Render (API) + Vercel/Netlify (frontend)
+```bash
+cd backend
+npm install
+npx prisma migrate dev --name init_reports
+npm run dev
+```
 
----
-
-## 🌐 Deployment
-
-
-- **Frontend:** [https://statusboard.vercel.app](https://statusboard-s9h9.onrender.com)
-- **Backend API:** [https://statusboard-api.onrender.com](https://status-board-dxljzosd7-julians-projects-389143e1.vercel.app)
+Runs at: `http://localhost:4000`
 
 ---
 
+### 2️⃣ Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Runs at: `http://localhost:5173`
+
+Optional `frontend/.env` for local:
+
+```env
+VITE_API_BASE_URL=http://localhost:4000
+```
+
+---
+
+## 🌐 Deployment (Suggested Setup)
+
+### Backend (Render)
+
+- Root Directory: `backend`
+- Build Command:
+
+```bash
+npm install
+npx prisma generate
+npx prisma migrate deploy
+```
+
+- Start Command:
+
+```bash
+node dist/index.js
+```
+
+- Environment Variables:
+  - `DATABASE_URL`
+  - `ADMIN_TOKEN`
+  - `PORT` (optional, Render sets one by default)
+
+### Frontend (Vercel)
+
+- Root Directory: `frontend`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment Variables:
+  - `VITE_API_BASE_URL` → URL of the backend deployed on Render
+
+---
+
+## 🧠 Learning Highlights
+
+This project demonstrates:
+
+- Clean **Express + TypeScript** architecture.
+- **Prisma ORM** with a real data model and migrations.
+- Environment-based configuration using **dotenv**.
+- Centralized error handling and structured logging.
+- Simple but real **API key auth** for admin operations.
+- Query parameter filtering for flexible data access.
+- Separation of concerns between backend and frontend.
+- End-to-end deployment of a fullstack app.
+
+---
+
+## 🔍 Example Workflow
+
+1. User submits a new incident from the React dashboard.
+2. Backend validates input and stores it via Prisma in SQLite.
+3. Admin/support updates the report status using the protected endpoint.
+4. Frontend reflects the updated status in the incident list.
+
+---
+
+## 🏁 Future Improvements
+
+- JWT-based authentication and user roles.
+- Pagination and sorting for large datasets.
+- PostgreSQL for production deployments.
+- Automated tests (Jest/Vitest).
+- WebSocket or SSE for live updates.
+- Swagger/OpenAPI documentation.
+
+---
+
+## 📜 License
+
+MIT License — feel free to fork, adapt, and build on top of this project.
 ## 🧑‍💻 Author
 
 **Julián Andrés Gaitán Hernández**  
