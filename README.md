@@ -185,8 +185,8 @@ Planned enhancements to increase production realism:
 ## 🌐 Deployment
 
 
-- **Frontend:** [https://statusboard.vercel.app](https://statusboard.vercel.app)
-- **Backend API:** [https://statusboard-api.onrender.com](https://statusboard-api.onrender.com)
+- **Frontend:** [https://statusboard.vercel.app](https://statusboard-s9h9.onrender.com)
+- **Backend API:** [https://statusboard-api.onrender.com](https://status-board-dxljzosd7-julians-projects-389143e1.vercel.app)
 
 ---
 
