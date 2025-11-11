@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import reportRoutes from "./reportRoutes";
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(morgan("dev"));
 app.get("/", (req, res) => {
   res.json({ message: "StatusBoard API running" });
 });
+
+app.use("/reports", reportRoutes);
 
 const PORT = 4000;
 
